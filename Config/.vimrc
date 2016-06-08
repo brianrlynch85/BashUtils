@@ -29,6 +29,3 @@ set nowrap
 
 "Set relative line numbers
 set rnu
-
-#Filetype detection
-filetype on
