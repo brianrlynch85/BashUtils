@@ -5,6 +5,8 @@
 # my video_player and tracking routines to perform Particle Tracking
 # Velocimetry.
 
+# ls -d -1 "$PWD"/{*.img,.*}
+
 echo '-----------------------------------------------------\n'
 echo 'TrackProcessScript.sh \n'
 
@@ -46,6 +48,15 @@ if [[ -n $INPUTFILE ]]; then
 
    echo INPUT FILENAME  "${INPUTFILE}"
 
+   pkill video_player
+   pkill track
+
+   parentdir="$(basename "${INPUTFILE}")"
+   OUTFILE="${parentdir}List.list"
+   echo Writing List to file: "${OUTFILE}"
+
+   mv "${OUTFILE}" ~/.local/share/Trash #rm -rf is a BAD IDEA
+
    # Loop through the filenames
    while read -r line || [[ -n "$line" ]]; do
 
@@ -56,12 +67,15 @@ if [[ -n $INPUTFILE ]]; then
       fname="${line//./}" 
       echo "Output file - $fname"
 
+      # Write the output filename to a list file
+      echo "${fname}/_list.txt" >> "${OUTFILE}"
+
       # Run the player in background, sync with track is automatic
       video_player -d 0 -z -f --file="${name}" &
       sleep 1   
 
       # Start tracking
-      track -s -f -i 25 --pstateo="${fname}"
+      track -s -f -i 55 --pstateo="${fname}"
 
       echo "Done processing file $name"
       sleep 1
